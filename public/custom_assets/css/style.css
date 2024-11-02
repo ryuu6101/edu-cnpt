@@ -1,0 +1,62 @@
+/* Chrome, Safari, Edge, Opera */
+input.hidden-arrow::-webkit-outer-spin-button,
+input.hidden-arrow::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input.hidden-arrow[type=number] {
+    -moz-appearance: textfield;
+}
+
+input::-webkit-calendar-picker-indicator {
+    display: none;
+    opacity: 0;
+}
+
+table.table-sticky-header {
+    border-collapse:separate !important;
+    border-spacing:0 !important;
+    border-top: none !important;
+}
+
+table.table-sticky-header thead {
+    position: sticky;
+    top: 0;
+    background-color: inherit;
+}
+
+.table td.fit, 
+.table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.dot {
+    display: inline-block;
+    animation-name: bouncing;
+    animation-duration: 700ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+    &:nth-child(2) {
+        animation-delay: 125ms;
+    }
+    &:nth-child(3) {
+        animation-delay: 250ms;
+    }
+}
+
+@keyframes bouncing {
+    0% {
+        transform: none;
+    }
+
+    33% {
+        transform: translateY(-.5em);
+    }
+
+    66% {
+        transform: none;
+    }
+}
