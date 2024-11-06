@@ -86,5 +86,14 @@
 
 	<script src="{{ asset('custom_assets/js/script.js') }}"></script>
 
+	@if (session('success'))
+	<script>
+		new Noty({
+			text: "{{ session('success') }}",
+			type: "success",
+		}).show();
+	</script>
+	@endif
+
 </body>
 </html>

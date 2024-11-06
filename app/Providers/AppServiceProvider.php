@@ -12,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $models = ['Department', 'School', 'ClassRoom', 'Student', 'VneduFile', 'Subject', 'VneduSubject', 'Semester'];
+        $models = ['Department', 'School', 'ClassRoom', 'Student', 'VneduFile', 'Subject', 'VneduSubject', 'Semester', 'Scoreboard'];
 
         foreach ($models as $key => $value) {
             $plural = Str::plural($value);
@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // \URL::forceScheme('https');
     }
 }

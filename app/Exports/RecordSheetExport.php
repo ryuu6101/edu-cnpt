@@ -38,7 +38,7 @@ class RecordSheetExport implements FromArray, WithTitle, WithEvents
         $heading_arr = [
             [mb_strtoupper($class->school->department->name, 'UTF-8')],
             [mb_strtoupper($class->school->name, 'UTF-8')],
-            [mb_strtoupper("Bảng điểm chi tiết - Môn {$subject->vnedu_subject->name} - Học kỳ {$semester->semester} - Năm học {$semester->school_year}", 'UTF-8')],
+            [mb_strtoupper("Bảng điểm chi tiết - Môn {$subject->vnedu_subject->name} - {$semester->semester} - Năm học {$semester->school_year}", 'UTF-8')],
             ["Khối {$class->grade} - Lớp ".str_replace('_', '/', $class->name)],
             [''],
             ['STT', 'Mã học sinh', 'Họ và tên', '', 'ĐĐGtx', '', '', '', 'ĐĐGgk', 'ĐĐGck', 'ĐTBmhk', 'Nhận xét'],

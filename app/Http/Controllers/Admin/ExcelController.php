@@ -22,7 +22,7 @@ class ExcelController extends Controller
         }
         Excel::import($import, $file);
 
-        return back();
+        return back()->with('success', 'Import thành công');
     }
 
     public function excelExport(Request $request) {

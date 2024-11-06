@@ -12,7 +12,7 @@
                     </a>
 
                     <div class="media-body">
-                        <div class="font-weight-semibold">{{ auth()->user()->fullname }}</div>
+                        <div class="font-weight-semibold">{{ auth()->user()->username }}</div>
                         {{-- <div class="font-size-sm line-height-sm opacity-50">
                             Senior developer
                         </div> --}}
@@ -67,6 +67,13 @@
                     <a href="{{ route('vnedu-files.index') }}" class="nav-link vnedu-files">
                         <i class="icon-file-spreadsheet"></i>
                         <span>Bảng điểm</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ asset('pdf/hdsd_edu_cnpt.pdf') }}" class="nav-link" target="_blank">
+                        <i class="icon-file-text2"></i> 
+                        <span>Hướng dẫn</span>
                     </a>
                 </li>
 
