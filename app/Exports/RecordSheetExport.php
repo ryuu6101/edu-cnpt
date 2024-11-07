@@ -2,11 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Subject;
-use App\Models\Semester;
-use App\Models\ClassRoom;
-use App\Models\VneduSheet;
-use App\Models\SemesterRecord;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -16,29 +11,24 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 class RecordSheetExport implements FromArray, WithTitle, WithEvents
 {
-    private $class_id;
-    private $semester_id;
-    private $subject_id;
-    private $vnedu_sheet_name;
+    protected $vnedu_file;
+    protected $sheet;
 
-    public function __construct($class_id, $semester_id, $subject_id, $vnedu_sheet_name) {
-        $this->class_id = $class_id;
-        $this->semester_id = $semester_id;
-        $this->subject_id = $subject_id;
-        $this->vnedu_sheet_name = $vnedu_sheet_name;
+    public function __construct($vnedu_file, $sheet) {
+        $this->vnedu_file = $vnedu_file;
+        $this->sheet = $sheet;
     }
 
     public function array(): array
     {
-        $class = ClassRoom::find($this->class_id);
-        $subject = Subject::find($this->subject_id);
-        $semester = Semester::find($this->semester_id);
-        $list_records = $semester->records->where('class_id', $this->class_id)->where('subject_id', $this->subject_id);
-
+        $class = $this->vnedu_file->class;
+        $semester = $this->vnedu_file->semester;
+        $vnedu_subject = $this->sheet->vnedu_subject;
+        
         $heading_arr = [
             [mb_strtoupper($class->school->department->name, 'UTF-8')],
             [mb_strtoupper($class->school->name, 'UTF-8')],
-            [mb_strtoupper("Bảng điểm chi tiết - Môn {$subject->vnedu_subject->name} - {$semester->semester} - Năm học {$semester->school_year}", 'UTF-8')],
+            [mb_strtoupper("Bảng điểm chi tiết - Môn {$vnedu_subject->name} - {$semester->semester} - Năm học {$semester->school_year}", 'UTF-8')],
             ["Khối {$class->grade} - Lớp ".str_replace('_', '/', $class->name)],
             [''],
             ['STT', 'Mã học sinh', 'Họ và tên', '', 'ĐĐGtx', '', '', '', 'ĐĐGgk', 'ĐĐGck', 'ĐTBmhk', 'Nhận xét'],
@@ -47,28 +37,49 @@ class RecordSheetExport implements FromArray, WithTitle, WithEvents
 
         $record_arr = [];
         $stt = 1;
-        foreach ($list_records as $key => $record) {
-            $student_name = $record->student->fullname;
-            $student_code = $record->student->student_code;
-            $splited_name = get_first_and_last_name($student_name);
-
-            $record_arr[] = [
-                $stt++,
-                $student_code,
-                $splited_name['first'], 
-                $splited_name['last'],
-                $record->tx1,
-                $record->tx2,
-                $record->tx3,
-                $record->tx4,
-            ];
+        if ($subject = $vnedu_subject->subject) {
+            $list_records = $semester->records->where('class_id', $class->id)->where('subject_id', $subject->id);
+            foreach ($list_records as $key => $record) {
+                $student_name = $record->student->fullname;
+                $student_code = $record->student->student_code;
+                $splited_name = get_first_and_last_name($student_name);
+    
+                $record_arr[] = [
+                    $stt++,
+                    $student_code,
+                    $splited_name['first'], 
+                    $splited_name['last'],
+                    $record->tx1,
+                    $record->tx2,
+                    $record->tx3,
+                    $record->tx4,
+                ];
+            }
+        } else {
+            $list_students = $class->students;
+            foreach ($list_students as $key => $student) {
+                $student_name = $student->fullname;
+                $student_code = $student->student_code;
+                $splited_name = get_first_and_last_name($student_name);
+    
+                $record_arr[] = [
+                    $stt++,
+                    $student_code,
+                    $splited_name['first'], 
+                    $splited_name['last'],
+                    '',
+                    '',
+                    '',
+                    '',
+                ];
+            }
         }
 
         return array_merge($heading_arr, $record_arr);
     }
 
     public function title(): string {
-        return $this->vnedu_sheet_name;
+        return $this->sheet->sheet_name;
     }
 
     public function registerEvents(): array

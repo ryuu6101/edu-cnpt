@@ -30,7 +30,7 @@
                     @if ($action == 'delete')
                     <div class="row">
                         <div class="col">
-                            <span class="mt-3">Bạn có chắc muốn xóa Lớp {{ $class->name }}?</span>
+                            <span class="mt-3">Bạn có chắc muốn xóa Lớp {{ $class->name ?? '' }}?</span>
                         </div>
                     </div>
                     @else

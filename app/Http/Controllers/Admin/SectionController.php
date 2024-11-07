@@ -6,18 +6,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Schools\SchoolRepositoryInterface;
 use App\Repositories\ClassRooms\ClassRoomRepositoryInterface;
+use App\Repositories\VneduFiles\VneduFileRepositoryInterface;
 
 class SectionController extends Controller
 {
     protected $schoolRepos;
     protected $classRoomRepos;
+    protected $vneduFileRepos;
 
     public function __construct(
         SchoolRepositoryInterface $schoolRepos,
         ClassRoomRepositoryInterface $classRoomRepos,
+        VneduFileRepositoryInterface $vneduFileRepos,
     ) {
         $this->schoolRepos = $schoolRepos;
         $this->classRoomRepos = $classRoomRepos;
+        $this->vneduFileRepos = $vneduFileRepos;
     }
 
     public function dashboard() {
@@ -96,9 +100,13 @@ class SectionController extends Controller
             'breadcrumb' => 'Bảng điểm',
         ];
 
+        $vnedu_file_id = $request->input('file_id');
+        $vnedu_file = $this->vneduFileRepos->find($vnedu_file_id);
+        if (!$vnedu_file) return abort(404);
+
         return view('admin.sections.scoreboard.index')->with([
-            'vnedu_file_id' => $request->input('file_id'),
-            'menu' => $menu]
-        );
+            'vnedu_file_id' => $vnedu_file_id,
+            'menu' => $menu
+        ]);
     }
 }

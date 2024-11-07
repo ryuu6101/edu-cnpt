@@ -30,16 +30,30 @@
                     @if ($action == 'delete')
                     <div class="row">
                         <div class="col">
-                            <span class="mt-3">Bạn có chắc muốn xóa {{ $school->name }}?</span>
+                            <span class="mt-3">Bạn có chắc muốn xóa {{ $school->name ?? '' }}?</span>
                         </div>
                     </div>
                     @else
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Tên trường:</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" wire:model.blur="name">
+                            <input type="text" class="form-control" wire:model.lazy="name">
                             @error('name')
                             <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label">Tên trường (Vnedu):</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" wire:model.blur="export_name">
+                            @error('export_name')
+                            <span class="text-danger">{{ $message }}</span>
+                            @else
+                            <span class="text-danger" style="font-size: .8rem">
+                                (*) Có thể bỏ trống nếu tên trường học trong file CSDL và Vnedu trùng khớp với nhau
+                            </span>
                             @enderror
                         </div>
                     </div>

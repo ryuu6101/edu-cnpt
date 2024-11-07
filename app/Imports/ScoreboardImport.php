@@ -52,10 +52,14 @@ class ScoreboardImport implements ToCollection, WithHeadingRow, WithEvents
         $subject_name_striped = strip_vn($subject_name);
         $subject_name_slug = str_replace(' ', '_', mb_strtolower($subject_name_striped, 'UTF-8'));
 
-        $lowcase_school_name = strtolower($school_name);
-        if (str_contains($lowcase_school_name, 'tiểu học')) $level = 1;
-        elseif (str_contains($lowcase_school_name, 'thcs')) $level = 2;
-        elseif (str_contains($lowcase_school_name, 'thpt')) $level = 3;
+        // $lowcase_school_name = strtolower($school_name);
+        // if (str_contains($lowcase_school_name, 'tiểu học')) $level = 1;
+        // elseif (str_contains($lowcase_school_name, 'thcs')) $level = 2;
+        // elseif (str_contains($lowcase_school_name, 'thpt')) $level = 3;
+
+        if (in_array($grade, [1,2,3,4,5])) $level = 1;
+        elseif (in_array($grade, [6,7,8,9])) $level = 2;
+        elseif (in_array($grade, [10,11,12])) $level = 3;
         
         $subject = Subject::firstOrCreate([
             'name' => $subject_name,

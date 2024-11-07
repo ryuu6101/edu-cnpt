@@ -17,6 +17,7 @@ class CrudSchool extends Component
     public $school;
     public $action;
     public $name;
+    public $export_name;
     public $list_departments;
     public $department_id;
     public $level;
@@ -40,6 +41,7 @@ class CrudSchool extends Component
                 'required',
                 Rule::unique('schools')->where('department_id', $this->department_id)->ignore($this->school->id ?? 0),
             ],
+            'export_name' => ['nullable'],
             'department_id' => ['nullable'],
             'level' => ['nullable'],
         ];
@@ -71,9 +73,15 @@ class CrudSchool extends Component
 
     public function getData() {
         $this->name = $this->school->name ?? '';
-        $this->department_id = $this->school->department_id ?? $this->list_departments->first()->id;
-        $this->level = $this->school->level;
+        $this->export_name = $this->school->export_name ?? '';
+        $this->department_id = $this->school->department_id ?? $this->list_departments->first()->id ?? 0;
+        $this->level = $this->school->level ?? 1;
     }
+
+    // public function updatedName() {
+    //     if ($this->action != 'create') return;
+    //     $this->export_name = $this->name;
+    // }
 
     public function create() {
         $params = $this->validate();

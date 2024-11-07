@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Exception;
 use App\Models\School;
 use App\Models\Student;
 use App\Models\Subject;
@@ -18,36 +19,58 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class VneduImport implements ToCollection, WithEvents, WithChunkReading
 {
+    public $FileName;
     public $VneduFile;
-    public $CurrentSheetIndex;
-    public $CurrentSheetName;
+    public $CurrentSheetIndex = 0;
+    public $CurrentSheetName = '';
+    public $ErrorMessage = '';
 
-    public function __construct($vnedu_file){
-        $this->VneduFile = $vnedu_file;
-        $this->CurrentSheetIndex = 0;
-        $this->CurrentSheetName = '';
+    public function __construct($filename){
+        $this->FileName = $filename;
     }
 
     public function collection(Collection $collection)
     {
+        if ($this->ErrorMessage != '') return;
+
         $subject_semester_school_year = explode(' - ', $collection[2][0]);
         $grade_and_class = explode(' - ', $collection[3][0]);
 
-        $school_name = trim(str_replace(' TRƯỜNG', '', $collection[1][0]));
-        $class_name = trim(str_replace('Lớp', '', $grade_and_class[1]));
+        if ($this->CurrentSheetIndex <= 1) {
+            $school_name = trim(str_replace(' TRƯỜNG', '', $collection[1][0]));
+            $class_name = trim(str_replace('Lớp', '', $grade_and_class[1]));
+            // $semester = trim(str_replace('HỌC KỲ', '', $subject_semester_school_year[2]));
+            $semester = trim($subject_semester_school_year[2]);
+            $school_year = trim(str_replace('NĂM HỌC', '', $subject_semester_school_year[3]));
+    
+            $school = School::where('export_name', $school_name)->orWhere('name', $school_name)->first();
+            if (!$school) {
+                $this->ErrorMessage = nl2br("Đã xảy ra lỗi! \n Không tìm thấy {$school_name}");
+                return;
+            }
+            $class = $school->classes->where('name', $class_name)->first();
+            if (!$class) {
+                $this->ErrorMessage = nl2br("Đã xảy ra lỗi! \n Không tìm thấy lớp {$class_name}");
+                return;
+            }
+            $semester = Semester::where('school_year', $school_year)->where('semester', $semester)->first();
+            if (!$semester) {
+                $this->ErrorMessage = nl2br("Đã xảy ra lỗi! \n Không tìm thấy {$semester} ({$school_year})");
+                return;
+            }
+
+            $this->VneduFile = VneduFile::firstOrCreate([
+                'file_name' => $this->FileName,
+                'semester_id' => $semester->id,
+                'school_id' => $school->id,
+                'class_id' => $class->id,
+            ]);
+        }
+        
         $grade = trim(str_replace('Khối', '', $grade_and_class[0]));
         $subject_name = mb_ucfirst(trim(str_replace('MÔN', '', $subject_semester_school_year[1])), 'UTF-8', true);
-        // $semester = trim(str_replace('HỌC KỲ', '', $subject_semester_school_year[2]));
-        $semester = trim($subject_semester_school_year[2]);
-        $school_year = trim(str_replace('NĂM HỌC', '', $subject_semester_school_year[3]));
-
-        $school = School::where('name', $school_name)->first();
-        if (!$school) return;
-        $class = $school->classes->where('name', $class_name)->first();
-        if (!$class) return;
         $subject = Subject::where('name', $subject_name)->where('grade', $grade)->first();
-        $semester = Semester::where('school_year', $school_year)->where('semester', $semester)->first();
-
+        
         $vnedu_subject = VneduSubject::firstOrCreate([
             'name' => $subject_name,
             'grade' => $grade,
@@ -56,9 +79,6 @@ class VneduImport implements ToCollection, WithEvents, WithChunkReading
         ]);
 
         VneduSheet::updateOrCreate([
-            // 'semester_id' => $semester->id ?? null,
-            // 'school_id' => $school->id ?? null,
-            // 'class_id' => $class->id ?? null,
             'vnedu_file_id' => $this->VneduFile->id,
             'vnedu_subject_id' => $vnedu_subject->id,
         ],[
@@ -67,12 +87,6 @@ class VneduImport implements ToCollection, WithEvents, WithChunkReading
         ]);
 
         if ($this->CurrentSheetIndex > 1) return;
-
-        $this->VneduFile->update([
-            'semester_id' => $semester->id ?? null,
-            'school_id' => $school->id,
-            'class_id' => $class->id,
-        ]);
 
         $records = $collection->slice(7, $class->students->count());
         foreach ($records as $key => $record) {

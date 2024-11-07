@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Semester;
 use App\Models\ClassRoom;
+use App\Models\VneduFile;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class RecordExport implements WithMultipleSheets
@@ -17,11 +18,9 @@ class RecordExport implements WithMultipleSheets
     public function sheets():array {
         $sheets = [];
 
-        $semester = $this->vnedu_file->semester;
         $vnedu_sheets = $this->vnedu_file->vnedu_sheets->sortBy('sheet_index');
         foreach ($vnedu_sheets as $key => $sheet) {
-            if (!isset($sheet->vnedu_subject->subject->id)) continue;
-            $sheets[] = new RecordSheetExport($this->vnedu_file->class_id, $semester->id, $sheet->vnedu_subject->subject->id, $sheet->sheet_name);
+            $sheets[] = new RecordSheetExport($this->vnedu_file, $sheet);
         }
 
         return $sheets;

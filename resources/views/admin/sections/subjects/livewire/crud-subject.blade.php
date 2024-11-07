@@ -36,7 +36,7 @@
                                 (*) Lưu ý: Xóa môn học sẽ ảnh hưởng đến 
                                 các bảng điểm đang được lưu trong hệ thống <br>
                             </span>
-                            <span class="mt-3">Bạn có chắc muốn xóa môn {{ $subject->name }}?</span>
+                            <span class="mt-3">Bạn có chắc muốn xóa môn {{ $subject->name ?? '' }}?</span>
                         </div>
                     </div>
                     @else

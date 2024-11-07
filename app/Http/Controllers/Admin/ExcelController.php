@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Excel;
+use Exception;
 use App\Imports\VneduImport;
 use Illuminate\Http\Request;
 use App\Exports\RecordExport;
@@ -13,16 +14,33 @@ class ExcelController extends Controller
 {
     public function excelImport(Request $request) {
         $file = $request->file('excel');
+        if (!$file) {
+            return back()->with('noty', [
+                'type' => 'error',
+                'message' => 'Chưa chọn file excel',
+            ]);
+        }
+
         $extension = $file->getClientOriginalExtension();
         if ($extension == 'xlsx') {
             $import = new ScoreboardImport();
         } else {
-            $vnedu_file = \App\Models\VneduFile::firstOrCreate(['file_name' => basename($file->getClientOriginalName(), '.xls')]);
-            $import = new VneduImport($vnedu_file);
+            $filename = basename($file->getClientOriginalName(), '.xls');
+            $import = new VneduImport($filename);
         }
         Excel::import($import, $file);
 
-        return back()->with('success', 'Import thành công');
+        if (isset($import->ErrorMessage) && $import->ErrorMessage != '') {
+            return back()->with('noty', [
+                'type' => 'error',
+                'message' => $import->ErrorMessage,
+            ]);
+        }
+
+        return back()->with('noty', [
+            'type' => 'success',
+            'message' => 'Import thành công',
+        ]);
     }
 
     public function excelExport(Request $request) {
