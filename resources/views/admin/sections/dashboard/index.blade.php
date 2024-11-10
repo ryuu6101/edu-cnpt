@@ -20,19 +20,75 @@
                     @csrf
                     @method('POST')
                     <div class="row justify-content-center">
-                        <div class="col-6 text-center">
-                            {{-- <div class="custom-file text-left w-auto">
-                                <input type="file" name="excel" id="excelFileInput" class="custom-file-input" accept=".xlsx,.xls">
-                                <label class="custom-file-label" for="excelFileInput">Choose file</label>
-                            </div> --}}
-                            <input type="file" name="excel" class="form-control h-100" accept=".xlsx,.xls">
+                        <div class="col-5">
+                            <div class="custom-file text-left w-100">
+                                <input type="file" name="excel" id="excelFileInput" class="custom-file-input" 
+                                accept=".xlsx,.xls" onchange="getFileName(this)">
+                                <label class="custom-file-label text-muted" for="excelFileInput">Nhập file CSDL và EDU vào đây</label>
+                                @error('excel-input')
+                                <span class="text-danger mt-3">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            {{-- <input type="file" name="excel" class="form-control" accept=".xlsx,.xls"> --}}
                         </div>
-                        <button type="submit" class="btn btn-success">Nhập File Excel</button>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-success">Nhập File Excel</button>
+                        </div>
                     </div>
                 </form>
+
+                @if (session('student_error'))
+                <div class="row justify-content-center mt-3">
+                    <div class="col-auto">
+                        <div class="table-responsive mb-2">
+                            <table class="table table-sm table-bordered table-dark align-middle text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center">Có bên EDU không có bên CSDL</th>
+                                        <th scope="col" class="text-center"></th>
+                                        <th scope="col" class="text-center">Có bên CSDL không có bên EDU</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php($students = session('student_error')['students'])
+                                    @php($vnedu_students = session('student_error')['vnedu_students'])
+                                    @for ($index = 0; true; $index++)
+                                    <tr>
+                                        @break(!(isset($students[$index]) || isset($vnedu_students[$index])))
+                                        @php($student = $students[$index] ?? '')
+                                        @php($vnedu_student = $vnedu_students[$index] ?? '')
+                                        @if (in_array($vnedu_student, $students))
+                                        <td class="text-left">{{ $vnedu_student }}</td>
+                                        <td class="text-left">{{ $vnedu_student }}</td>
+                                        @else
+                                        <td class="text-left bg-primary">{{ $vnedu_student }}</td>
+                                        <td class="text-center bg-primary">N/A</td>
+                                        @endif
+                                        @if (($student == '') || in_array($student, $vnedu_students))
+                                        <td class="text-left">{{ $student }}</td>
+                                        @else
+                                        <td class="text-center bg-danger">N/A</td>
+                                        @endif
+                                    </tr>
+                                    @endfor
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function getFileName(input) {
+        var filename = input.files[0].name;
+        $("label[for='excelFileInput']").html(filename);
+    }
+</script>
+@endpush

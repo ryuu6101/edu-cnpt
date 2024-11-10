@@ -93,6 +93,8 @@ class ScoreboardImport implements ToCollection, WithHeadingRow, WithEvents
             $tx2 = $record[6];
             $tx3 = $record[7];
             $tx4 = $record[8];
+            $DDGgk = $record[10];
+            $DDGck = $record[11];
 
             if (empty($student_name)) continue;
 
@@ -113,6 +115,8 @@ class ScoreboardImport implements ToCollection, WithHeadingRow, WithEvents
                 'tx2' => $tx2,
                 'tx3' => $tx3,
                 'tx4' => $tx4,
+                'ddggk' => $DDGgk,
+                'ddgck' => $DDGck,
             ]);
         }
     }

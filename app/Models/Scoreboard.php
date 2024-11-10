@@ -21,6 +21,9 @@ class Scoreboard extends Model
         'tx2',
         'tx3',
         'tx4',
+        'tx5',
+        'ddggk',
+        'ddgck',
     ];
 
     public function semester() {

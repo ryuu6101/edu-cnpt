@@ -37,8 +37,8 @@ class RecordSheetExport implements FromArray, WithTitle, WithEvents
 
         $record_arr = [];
         $stt = 1;
-        if ($subject = $vnedu_subject->subject) {
-            $list_records = $semester->records->where('class_id', $class->id)->where('subject_id', $subject->id);
+        $list_records = $semester->records->where('class_id', $class->id)->where('subject_id', $vnedu_subject->subject->id ?? 0);
+        if ($list_records->count() > 0) {
             foreach ($list_records as $key => $record) {
                 $student_name = $record->student->fullname;
                 $student_code = $record->student->student_code;
@@ -53,6 +53,8 @@ class RecordSheetExport implements FromArray, WithTitle, WithEvents
                     $record->tx2,
                     $record->tx3,
                     $record->tx4,
+                    $record->ddggk,
+                    $record->ddgck,
                 ];
             }
         } else {
@@ -67,6 +69,8 @@ class RecordSheetExport implements FromArray, WithTitle, WithEvents
                     $student_code,
                     $splited_name['first'], 
                     $splited_name['last'],
+                    '',
+                    '',
                     '',
                     '',
                     '',

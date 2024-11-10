@@ -58,6 +58,8 @@ class ScoreboardDetail extends Component
             'tx2' => $this->edit_record->tx2,
             'tx3' => $this->edit_record->tx3,
             'tx4' => $this->edit_record->tx4,
+            'ddggk' => $this->edit_record->ddggk,
+            'ddgck' => $this->edit_record->ddgck,
         ];
     }
 

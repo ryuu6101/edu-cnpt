@@ -75,6 +75,8 @@
                                                 <th scope="col" class="text-center" rowspan="2">Mã học sinh</th>
                                                 <th scope="col" class="text-center" rowspan="2" colspan="2">Họ và tên</th>
                                                 <th scope="col" class="text-center" colspan="4">ĐĐGtx</th>
+                                                <th scope="col" class="text-center" rowspan="2">ĐĐGgk</th>
+                                                <th scope="col" class="text-center" rowspan="2">ĐĐGck</th>
                                                 <th scope="col" class="text-center" rowspan="2"></th>
                                             </tr>
                                             <tr>
@@ -93,33 +95,41 @@
                                                 @if ($record->id == $edit_record_id)
                                                 <td class="text-center">
                                                     <input type="text" class="form-control text-center" 
-                                                    wire:model.lazy="edit_student_fields.student_code">
+                                                    wire:model.blur="edit_student_fields.student_code">
                                                 </td>
                                                 <td class="text-start" colspan="2">
                                                     <input type="text" class="form-control" 
-                                                    wire:model.lazy="edit_student_fields.fullname">
+                                                    wire:model.blur="edit_student_fields.fullname">
                                                 </td>
                                                 @if ($subject->use_digit_point)
                                                 <td class="text-center">
                                                     <input type="number" class="form-control text-center hidden-arrow" 
-                                                    wire:model.lazy="edit_record_fields.tx1" oninput="checkRange(this)">
+                                                    wire:model.blur="edit_record_fields.tx1" oninput="checkRange(this)">
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number" class="form-control text-center hidden-arrow" 
-                                                    wire:model.lazy="edit_record_fields.tx2" oninput="checkRange(this)">
+                                                    wire:model.blur="edit_record_fields.tx2" oninput="checkRange(this)">
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number" class="form-control text-center hidden-arrow" 
-                                                    wire:model.lazy="edit_record_fields.tx3" oninput="checkRange(this)">
+                                                    wire:model.blur="edit_record_fields.tx3" oninput="checkRange(this)">
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number" class="form-control text-center hidden-arrow" 
-                                                    wire:model.lazy="edit_record_fields.tx4" oninput="checkRange(this)">
+                                                    wire:model.blur="edit_record_fields.tx4" oninput="checkRange(this)">
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number" class="form-control text-center hidden-arrow" 
+                                                    wire:model.blur="edit_record_fields.ddggk" oninput="checkRange(this)">
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number" class="form-control text-center hidden-arrow" 
+                                                    wire:model.blur="edit_record_fields.ddgck" oninput="checkRange(this)">
                                                 </td>
                                                 @else
                                                 <td class="text-center">
                                                     <select type="number" class="form-control" 
-                                                    wire:model.lazy="edit_record_fields.tx1">
+                                                    wire:model.blur="edit_record_fields.tx1">
                                                         <option value=""></option>
                                                         <option value="Đ">Đ</option>
                                                         <option value="CĐ">CĐ</option>
@@ -127,7 +137,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <select type="number" class="form-control" 
-                                                    wire:model.lazy="edit_record_fields.tx2">
+                                                    wire:model.blur="edit_record_fields.tx2">
                                                         <option value=""></option>
                                                         <option value="Đ">Đ</option>
                                                         <option value="CĐ">CĐ</option>
@@ -135,7 +145,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <select type="number" class="form-control" 
-                                                    wire:model.lazy="edit_record_fields.tx3">
+                                                    wire:model.blur="edit_record_fields.tx3">
                                                         <option value=""></option>
                                                         <option value="Đ">Đ</option>
                                                         <option value="CĐ">CĐ</option>
@@ -143,7 +153,23 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <select type="number" class="form-control text-center" 
-                                                    wire:model.lazy="edit_record_fields.tx4">
+                                                    wire:model.blur="edit_record_fields.tx4">
+                                                        <option value=""></option>
+                                                        <option value="Đ">Đ</option>
+                                                        <option value="CĐ">CĐ</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <select type="number" class="form-control text-center" 
+                                                    wire:model.blur="edit_record_fields.ddggk">
+                                                        <option value=""></option>
+                                                        <option value="Đ">Đ</option>
+                                                        <option value="CĐ">CĐ</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <select type="number" class="form-control text-center" 
+                                                    wire:model.blur="edit_record_fields.ddgck">
                                                         <option value=""></option>
                                                         <option value="Đ">Đ</option>
                                                         <option value="CĐ">CĐ</option>
@@ -152,7 +178,7 @@
                                                 @endif
                                                 <td class="text-center">
                                                     <a href="#!" class="badge badge-success" 
-                                                    wire:click.prevent="updateRecord()">
+                                                    wire:click.prevent="updateRecord">
                                                         <i class="icon-floppy-disk"></i>
                                                     </a>
                                                     <a href="#!" class="badge badge-danger" 
@@ -168,6 +194,8 @@
                                                 <td class="text-center">{{ $record->tx2 ?? '' }}</td>
                                                 <td class="text-center">{{ $record->tx3 ?? '' }}</td>
                                                 <td class="text-center">{{ $record->tx4 ?? '' }}</td>
+                                                <td class="text-center">{{ $record->ddggk ?? '' }}</td>
+                                                <td class="text-center">{{ $record->ddgck ?? '' }}</td>
                                                 <td class="text-center">
                                                     <a href="#!" class="badge badge-primary" 
                                                     wire:click.prevent="editRecord({{ $record->id }})">

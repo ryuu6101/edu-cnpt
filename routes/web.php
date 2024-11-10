@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\SectionController;
 |
 */
 
-Route::redirect('/', 'login');
+Route::redirect('/', 'login')->name('login');
 
 Route::middleware('guest')->group(function() {
     Route::get('login', [LoginController::class, 'index'])->name('login.index');
