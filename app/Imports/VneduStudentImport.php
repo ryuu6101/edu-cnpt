@@ -27,24 +27,24 @@ class VneduStudentImport implements ToCollection, WithMultipleSheets
 
         $student_codes = [];
         for ($stt = 7; true; $stt++) {
-            $row = $collection[$stt];
+            if (!($row = $collection[$stt] ?? false)) break;
             if (!is_numeric($row[0])) break;
 
+            $index = trim($row[0]);
             $student_code = trim($row[1]);
             $student_name = trim($row[2]).' '.trim($row[3]);
 
             $this->vnedu_students[] = $student_name;
-            $student_codes[$student_name] = $student_code;
+            $student_codes[$index] = $student_code;
         }
 
-        // dd(array_diff($this->students, $this->vnedu_students));
-        if (($this->student_diff = array_diff($this->students, $this->vnedu_students)) != []) {
+        if (($this->student_diff = array_diff_assoc($this->students, $this->vnedu_students)) != []) {
             $this->ErrorMessage = "Danh sách học sinh không đồng nhất";
             return;
         }
 
         foreach ($this->class->students as $key => $student) {
-            $student->update(['student_code' => $student_codes[$student->fullname]]);
+            $student->update(['student_code' => $student_codes[$student->index]]);
         }
     }
 

@@ -78,4 +78,12 @@ abstract class BaseRepository implements RepositoryInterface
         if ($paginate > 0) return $list->paginate($paginate);
         else return $list->get();
     }
+
+    public function restoreOrFail($params = []) {
+        return false;
+        $soft_delete_class = 'Illuminate\Database\Eloquent\SoftDeletes';
+        if (!in_array($soft_delete_class, class_uses($this->model))) return false;
+
+        $deleted = $this->model->onlyTrashed()->fisrtOrFail();
+    }
 }

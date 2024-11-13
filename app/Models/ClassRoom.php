@@ -12,7 +12,7 @@ class ClassRoom extends Model
 {
     use HasFactory, SoftDeletes, CascadeSoftDeletes, Filterable;
 
-    protected $cascadeDeletes = ['students'];
+    // protected $cascadeDeletes = ['students'];
 
     protected $table = 'classes';
 

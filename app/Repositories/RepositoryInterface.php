@@ -40,4 +40,6 @@ interface RepositoryInterface
     public function delete($id);
 
     public function filter($params = [], $paginate = 0, $sort = 'asc');
+
+    public function restoreOrFail($params = []);
 }

@@ -58,6 +58,7 @@ class ScoreboardDetail extends Component
             'tx2' => $this->edit_record->tx2,
             'tx3' => $this->edit_record->tx3,
             'tx4' => $this->edit_record->tx4,
+            'tx5' => $this->edit_record->tx5,
             'ddggk' => $this->edit_record->ddggk,
             'ddgck' => $this->edit_record->ddgck,
         ];
@@ -72,7 +73,7 @@ class ScoreboardDetail extends Component
     public function render()
     {
         $vnedu_sheets = $this->vnedu_file->vnedu_sheets;
-        $scoreboards = $this->semester->records->where('class_id', $this->vnedu_file->class_id);
+        $scoreboards = $this->semester->records->where('class_id', $this->vnedu_file->class_id)->sortBy('student.index');
 
         return view('admin.sections.scoreboard.livewire.scoreboard-detail')->with([
             'vnedu_sheets' => $vnedu_sheets,

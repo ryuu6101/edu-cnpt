@@ -44,6 +44,7 @@
                             <table class="table table-sm table-bordered table-dark align-middle text-nowrap">
                                 <thead>
                                     <tr>
+                                        <th scope="col" class="text-center"></th>
                                         <th scope="col" class="text-center">Có bên EDU không có bên CSDL</th>
                                         <th scope="col" class="text-center"></th>
                                         <th scope="col" class="text-center">Có bên CSDL không có bên EDU</th>
@@ -57,7 +58,12 @@
                                         @break(!(isset($students[$index]) || isset($vnedu_students[$index])))
                                         @php($student = $students[$index] ?? '')
                                         @php($vnedu_student = $vnedu_students[$index] ?? '')
-                                        @if (in_array($vnedu_student, $students))
+                                        @if (($student == '') || in_array($student, $vnedu_students))
+                                        <td class="text-left">{{ $student }}</td>
+                                        @else
+                                        <td class="text-left bg-danger">{{ $student }}</td>
+                                        @endif
+                                        @if (($vnedu_student == '') || in_array($vnedu_student, $students))
                                         <td class="text-left">{{ $vnedu_student }}</td>
                                         <td class="text-left">{{ $vnedu_student }}</td>
                                         @else

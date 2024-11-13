@@ -12,7 +12,7 @@ class School extends Model
 {
     use HasFactory, SoftDeletes, CascadeSoftDeletes, Filterable;
 
-    protected $cascadeDeletes = ['classes'];
+    // protected $cascadeDeletes = ['classes'];
 
     protected $fillable = [
         'name',

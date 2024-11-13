@@ -44,16 +44,17 @@
                         <ul class="nav nav-tabs nav-tabs-highlight pb-2">
                             @foreach ($vnedu_sheets as $vnedu_sheet)
                             @php($subject_id = $vnedu_sheet->vnedu_subject->subject_id ?? 0)
+                            @php($records = $scoreboards->where('subject_id', $subject_id))
                             <li class="nav-item">
                                 <a href="#sheet_tab_{{ $vnedu_sheet->id }}" data-toggle="tab" wire:ignore.self
                                 class="nav-link {{ $loop->first ? 'active' : '' }} text-nowrap">
-                                    @if ($subject_id > 0)
-                                    <span>{{ $vnedu_sheet->sheet_name }}</span>
-                                    @else
+                                    @if ($subject_id <= 0 || $records->count() <= 0)
                                     <span class="text-danger">
                                         {{ $vnedu_sheet->sheet_name }}
                                         <i class="icon-warning22 ml-2"></i>
                                     </span>
+                                    @else
+                                    <span>{{ $vnedu_sheet->sheet_name }}</span>
                                     @endif
                                 </a>
                             </li>
@@ -67,14 +68,31 @@
                                 <div class="table-responsive">
                                     @php($subject = $vnedu_sheet->vnedu_subject->subject)
                                     @php($subject_id = $vnedu_sheet->vnedu_subject->subject_id ?? 0)
-                                    @if ($subject_id > 0)
+                                    @php($records = $scoreboards->where('subject_id', $subject_id))
+                                    @if ($subject_id <= 0)
+                                    <div class="w-100 text-center">
+                                        <h2 class="text-danger">
+                                            <i class="icon-warning mr-2"></i> <br> 
+                                            Vui lòng liên kết môn học <br>
+                                            Môn: {{ $vnedu_sheet->vnedu_subject->name }}
+                                        </h2>
+                                    </div>
+                                    @elseif ($records->count() <= 0)
+                                    <div class="w-100 text-center">
+                                        <h2 class="text-danger">
+                                            <i class="icon-warning mr-2"></i> <br> 
+                                            Không có dữ liệu <br>
+                                            Môn: {{ $vnedu_sheet->vnedu_subject->name }}
+                                        </h2>
+                                    </div>
+                                    @else
                                     <table class="table table-dark table-sm table-bordered table-hoverable text-nowrap align-middle">
                                         <thead class="align-middle">
                                             <tr>
                                                 <th scope="col" class="text-center" rowspan="2">STT</th>
                                                 <th scope="col" class="text-center" rowspan="2">Mã học sinh</th>
                                                 <th scope="col" class="text-center" rowspan="2" colspan="2">Họ và tên</th>
-                                                <th scope="col" class="text-center" colspan="4">ĐĐGtx</th>
+                                                <th scope="col" class="text-center" colspan="5">ĐĐGtx</th>
                                                 <th scope="col" class="text-center" rowspan="2">ĐĐGgk</th>
                                                 <th scope="col" class="text-center" rowspan="2">ĐĐGck</th>
                                                 <th scope="col" class="text-center" rowspan="2"></th>
@@ -84,14 +102,17 @@
                                                 <th scope="col" class="text-center">TX2</th>
                                                 <th scope="col" class="text-center">TX3</th>
                                                 <th scope="col" class="text-center">TX4</th>
+                                                <th scope="col" class="text-center">TX5</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($scoreboards->where('subject_id', $subject_id) as $record)
+                                            @foreach ($records as $record)
                                             @php($fullname = $record->student->fullname ?? '')
+                                            @continue($fullname == '')
                                             @php($splited_name = get_first_and_last_name($fullname))
                                             <tr>
                                                 <td class="text-center">{{ $loop->iteration }}</td>
+                                                {{-- <td class="text-center">{{ $record->student->index }}</td> --}}
                                                 @if ($record->id == $edit_record_id)
                                                 <td class="text-center">
                                                     <input type="text" class="form-control text-center" 
@@ -117,6 +138,10 @@
                                                 <td class="text-center">
                                                     <input type="number" class="form-control text-center hidden-arrow" 
                                                     wire:model.blur="edit_record_fields.tx4" oninput="checkRange(this)">
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number" class="form-control text-center hidden-arrow" 
+                                                    wire:model.blur="edit_record_fields.tx5" oninput="checkRange(this)">
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="number" class="form-control text-center hidden-arrow" 
@@ -161,6 +186,14 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <select type="number" class="form-control text-center" 
+                                                    wire:model.blur="edit_record_fields.tx5">
+                                                        <option value=""></option>
+                                                        <option value="Đ">Đ</option>
+                                                        <option value="CĐ">CĐ</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <select type="number" class="form-control text-center" 
                                                     wire:model.blur="edit_record_fields.ddggk">
                                                         <option value=""></option>
                                                         <option value="Đ">Đ</option>
@@ -194,6 +227,7 @@
                                                 <td class="text-center">{{ $record->tx2 ?? '' }}</td>
                                                 <td class="text-center">{{ $record->tx3 ?? '' }}</td>
                                                 <td class="text-center">{{ $record->tx4 ?? '' }}</td>
+                                                <td class="text-center">{{ $record->tx5 ?? '' }}</td>
                                                 <td class="text-center">{{ $record->ddggk ?? '' }}</td>
                                                 <td class="text-center">{{ $record->ddgck ?? '' }}</td>
                                                 <td class="text-center">
@@ -207,14 +241,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    @else
-                                    <div class="w-100 text-center">
-                                        <h2 class="text-danger">
-                                            <i class="icon-warning mr-2"></i> <br> 
-                                            Vui lòng liên kết môn học <br>
-                                            Môn: {{ $vnedu_sheet->vnedu_subject->name }}
-                                        </h2>
-                                    </div>
                                     @endif
                                 </div>
                             </div>

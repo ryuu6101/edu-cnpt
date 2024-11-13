@@ -12,7 +12,7 @@ class Semester extends Model
 {
     use HasFactory, SoftDeletes, CascadeSoftDeletes, Filterable;
 
-    protected $cascadeDeletes = ['records', 'vnedu_sheets'];
+    // protected $cascadeDeletes = ['records', 'vnedu_sheets'];
 
     protected $fillable = [
         'school_year',

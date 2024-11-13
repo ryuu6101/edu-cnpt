@@ -21,12 +21,12 @@
                     <div class="col-auto">
                         <input type="text" class="form-control mb-3 w-auto" placeholder="Tìm kiếm" wire:model.live="params.file_name">
                     </div>
-                    <div class="col text-right">
+                    {{-- <div class="col text-right">
                         <a href="{{ route('dashboard.index') }}" class="btn btn-sm btn-success">
                             <i class="icon-file-excel mr-2"></i>
                             Nhập file excel
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="row">

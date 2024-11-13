@@ -68,7 +68,7 @@ class SearchVneduFile extends Component
         $params = [
             'school_id' => $this->school_id,
             'class_id' => $this->class_id,
-            'semester_id' => $this->semester,
+            'semester_id' => $this->semester_id,
         ];
 
         $this->dispatch('search', params: $params)->to(ListVneduFile::class);

@@ -20,6 +20,7 @@ class Student extends Model
         'school_id',
         'class_id',
         'is_error',
+        'index',
     ];
 
     public function class() {

@@ -12,7 +12,7 @@ class VneduSubject extends Model
 {
     use HasFactory, SoftDeletes, CascadeSoftDeletes, Filterable;
 
-    protected $cascadeDeletes = ['vnedu_sheets'];
+    // protected $cascadeDeletes = ['vnedu_sheets'];
 
     protected $fillable = [
         'name',

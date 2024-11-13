@@ -12,7 +12,7 @@ class Subject extends Model
 {
     use HasFactory, SoftDeletes, CascadeSoftDeletes, Filterable;
 
-    protected $cascadeDeletes = ['records'];
+    // protected $cascadeDeletes = ['records'];
 
     protected $fillable = [
         'name',
