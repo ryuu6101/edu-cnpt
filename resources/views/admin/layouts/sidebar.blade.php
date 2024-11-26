@@ -1,33 +1,39 @@
-<div class="sidebar sidebar-dark sidebar-main sidebar-expand-lg">
+<div class="sidebar sidebar-light sidebar-main sidebar-expand-lg">
 
     <!-- Sidebar content -->
     <div class="sidebar-content">
 
         <!-- User menu -->
-        <div class="sidebar-section sidebar-user my-1">
-            <div class="sidebar-section-body">
-                <div class="media">
-                    <a href="#" class="mr-3">
-                        <img src="{{ asset('images/clipart3643767.png') }}" class="rounded-circle" alt="">
-                    </a>
+        <div class="sidebar-section">
+            <div class="sidebar-user-material">
+                <div class="sidebar-section-body">
+                    <div class="d-flex">
+                        <div class="flex-1">
+                            <button type="button" class="btn btn-outline-light border-transparent btn-icon btn-sm rounded-pill">
+                                <i class="icon-wrench"></i>
+                            </button>
+                        </div>
+                        <a href="#" class="flex-1 text-center">
+                            <img src="{{ asset('images/clipart3643767.png') }}" 
+                            class="img-fluid rounded-circle shadow-sm" width="80" height="80" alt="">
+                        </a>
+                        <div class="flex-1 text-right">
+                            <button type="button" class="btn btn-outline-light border-transparent btn-icon rounded-pill btn-sm sidebar-control sidebar-main-resize d-none d-lg-inline-flex">
+                                <i class="icon-transmission"></i>
+                            </button>
 
-                    <div class="media-body">
-                        <div class="font-weight-semibold">{{ auth()->user()->username }}</div>
-                        {{-- <div class="font-size-sm line-height-sm opacity-50">
-                            Senior developer
-                        </div> --}}
+                            <button type="button" class="btn btn-outline-light border-transparent btn-icon rounded-pill btn-sm sidebar-mobile-main-toggle d-lg-none">
+                                <i class="icon-cross2"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="ml-3 align-self-center">
-                        <button type="button" class="btn btn-outline-light-100 text-white border-transparent btn-icon rounded-pill btn-sm sidebar-control sidebar-main-resize d-none d-lg-inline-flex">
-                            <i class="icon-transmission"></i>
-                        </button>
-
-                        <button type="button" class="btn btn-outline-light-100 text-white border-transparent btn-icon rounded-pill btn-sm sidebar-mobile-main-toggle d-lg-none">
-                            <i class="icon-cross2"></i>
-                        </button>
+                    <div class="text-center">
+                        <h6 class="mb-0 text-white text-shadow-dark mt-3">{{ auth()->user()->username }}</h6>
+                        {{-- <span class="font-size-sm text-white text-shadow-dark">Santa Ana, CA</span> --}}
                     </div>
                 </div>
+
             </div>
         </div>
         <!-- /user menu -->

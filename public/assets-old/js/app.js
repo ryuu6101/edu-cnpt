@@ -252,64 +252,6 @@ const App = function () {
     // Components
     // -------------------------
 
-    // Ripple
-    const componentRipple = function() {
-
-        // Elements
-        const buttons = $('.ripple-light, .ripple-dark, .sp-replacer, .list-group-item-action, button[class*="trumbowyg-"], .btn:not(.disabled):not(.file-drag-handle):not(.multiselect):not(.btn-sidebar-expand):not(.btn-file), .nav-link:not(.disabled), .navbar-nav-link:not(.disabled), .sidebar-user-material-footer > a, .wizard > .actions a, .ui-button:not(.ui-dialog-titlebar-close):not(.ui-selectmenu-button), .ui-controlgroup .ui-selectmenu-button, .ui-tabs-anchor:not(.ui-state-disabled), .plupload_button:not(.plupload_disabled), .fc-button, .page-item:not(.disabled) > .page-link');
-
-        // Config
-        function createRipple(e) {
-            if (!buttons) return;
-
-            const button = $(e.currentTarget);
-            const rippleEffect = button.find('.ripple-effect');
-            const posX = e.currentTarget.getBoundingClientRect().left;
-            const posY = e.currentTarget.getBoundingClientRect().top;
-            let buttonWidth = e.currentTarget.getBoundingClientRect().width;
-            let buttonHeight = e.currentTarget.getBoundingClientRect().height;
-
-            if (rippleEffect) rippleEffect.remove();
-
-            // Ripple container
-            button.addClass('ripple-container');
-            if (button.hasClass('dropdown-toggle') && button.is(':empty')) {
-                button.addClass('ripple-only-child');
-            }
-
-            // Create ripple element
-            button.append('<span class="ripple-effect ripple-animation"></span>');
-            if (buttonWidth >= buttonHeight) {
-                buttonHeight = buttonWidth;
-            }
-            else {
-                buttonWidth = buttonHeight;
-            }
-    
-            // Assign dynamic styles
-            const x = e.clientX - posX - buttonWidth / 2;
-            const y = e.clientY - posY - buttonHeight / 2;
-            button.find('.ripple-effect').css({
-                width: buttonWidth,
-                height: buttonHeight,
-                left: x,
-                top: y
-            });
-
-            // Remove ripple element
-            function removeRipple() {
-                button.removeClass('ripple-container ripple-only-child');
-                button.find('.ripple-effect').remove();
-            }
-            button.on('animationend animationcancel', function() {
-                removeRipple();
-            });
-        }
-
-        // Init
-        buttons.on('mousedown', createRipple);
-    };
-
     // Tooltip
     const componentTooltip = function() {
         $('[data-popup="tooltip"]').tooltip({
@@ -544,7 +486,6 @@ const App = function () {
         },
         // Initialize all components
         initComponents: function() {
-            componentRipple();
             componentTooltip();
             componentPopover();
             componentToTopButton();

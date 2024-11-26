@@ -8,6 +8,7 @@ use App\Imports\VneduImport;
 use Illuminate\Http\Request;
 use App\Exports\RecordExport;
 use App\Imports\HeaderImport;
+use App\Imports\StudentImport;
 use App\Imports\ScoreboardImport;
 use App\Imports\VneduHeaderImport;
 use App\Imports\VneduStudentImport;
@@ -28,6 +29,9 @@ class ExcelController extends Controller
         if ($extension == 'xlsx') {
             $header_import = new HeaderImport();
             Excel::import($header_import, $file);
+
+            $student_import = new StudentImport($header_import->class);
+            Excel::import($student_import, $file);
 
             $import = new ScoreboardImport([
                 'department' => $header_import->department,

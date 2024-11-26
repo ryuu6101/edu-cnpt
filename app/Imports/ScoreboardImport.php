@@ -55,13 +55,16 @@ class ScoreboardImport implements ToCollection, WithChunkReading
 
             if (empty($student_name)) continue;
 
-            $student = Student::updateOrCreate([
-                'fullname' => $student_name,
-                'id_code' => $id_code,
-                'class_id' => $this->class->id,
-            ],[
-                'index' => $index,
-            ]);
+            // $student = Student::updateOrCreate([
+            //     'fullname' => $student_name,
+            //     'id_code' => $id_code,
+            //     'class_id' => $this->class->id,
+            // ],[
+            //     'index' => $index,
+            // ]);
+
+            $student = $this->class->students->where('id_code', $id_code)->first();
+            if (!$student) continue;
 
             $scoreboard = Scoreboard::updateOrCreate([
                 'semester_id' => $this->semester->id,

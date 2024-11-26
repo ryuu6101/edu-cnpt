@@ -7,7 +7,7 @@
 <div class="row">
     <div class="col">
         <div class="card">
-            <div class="card-header header-elements-inline bg-secondary text-white">
+            <div class="card-header header-elements-inline bg-vnpt text-white">
                 <h6 class="card-title">
                     <i class="icon-table2 mr-2"></i>
                     Import file excel
@@ -22,9 +22,26 @@
                     <div class="row justify-content-center">
                         <div class="col-5">
                             <div class="custom-file text-left w-100">
-                                <input type="file" name="excel" id="excelFileInput" class="custom-file-input" 
-                                accept=".xlsx,.xls" onchange="getFileName(this)">
-                                <label class="custom-file-label text-muted" for="excelFileInput">Nhập file CSDL và EDU vào đây</label>
+                                <input type="file" name="excel" id="excelFileInputCSDL" class="custom-file-input" 
+                                accept=".xlsx" onchange="getFileName(this)">
+                                <label class="custom-file-label text-muted" for="excelFileInputCSDL">Nhập file CSDL</label>
+                            </div>
+                            {{-- <input type="file" name="excel" class="form-control" accept=".xlsx,.xls"> --}}
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-success">Nhập File Excel</button>
+                        </div>
+                    </div>
+                </form>
+                <form action="{{ route('excel.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('POST')
+                    <div class="row justify-content-center mt-2">
+                        <div class="col-5">
+                            <div class="custom-file text-left w-100">
+                                <input type="file" name="excel" id="excelFileInputEDU" class="custom-file-input" 
+                                accept=".xls" onchange="getFileName(this)">
+                                <label class="custom-file-label text-muted" for="excelFileInputEDU">Nhập file EDU</label>
                                 @error('excel-input')
                                 <span class="text-danger mt-3">{{ $message }}</span>
                                 @enderror
@@ -94,7 +111,8 @@
 <script>
     function getFileName(input) {
         var filename = input.files[0].name;
-        $("label[for='excelFileInput']").html(filename);
+        var label = $(input).parent().children("label");
+        label.html(filename);
     }
 </script>
 @endpush

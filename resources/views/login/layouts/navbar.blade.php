@@ -1,7 +1,7 @@
-<div class="navbar navbar-expand-lg navbar-dark navbar-static">
+<div class="navbar navbar-expand-lg navbar-dark navbar-static bg-vnpt">
     <div class="navbar-brand ml-2 ml-lg-0">
         <a href="#!" class="d-inline-block">
-            <img src="{{ asset('images/Logo-CNPT-Copy-removebg-preview.png') }}" alt="">
+            <img src="{{ asset('images/vnpt-logo-white.png') }}" alt="">
         </a>
     </div>
 

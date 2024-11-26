@@ -1,4 +1,4 @@
-<div class="navbar navbar-expand-lg navbar-dark navbar-static">
+<div class="navbar navbar-expand-lg navbar-dark navbar-static bg-vnpt">
     <div class="d-flex flex-1 d-lg-none">
         {{-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
             <i class="icon-paragraph-justify3"></i>
@@ -10,8 +10,8 @@
 
     <div class="navbar-brand text-center text-lg-left">
         <a href="#!" class="d-inline-block">
-            <img src="{{ asset('images/Logo-CNPT-Copy-removebg-preview.png') }}" class="d-none d-sm-block" alt="">
-            <img src="{{ asset('images/Logo-CNPT-Copy-removebg-preview.png') }}" class="d-sm-none" alt="">
+            <img src="{{ asset('images/vnpt-logo-white.png') }}" class="d-none d-sm-block" alt="">
+            <img src="{{ asset('images/vnpt-logo-white.png') }}" class="d-sm-none" alt="">
         </a>
     </div>
 

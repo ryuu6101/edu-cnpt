@@ -47,6 +47,14 @@ table.table-sticky-header thead {
     }
 }
 
+.bg-vnpt {
+    background-color: rgb(0, 102, 179) !important;
+}
+
+.bg-vnpt-secondary {
+    background-color: rgb(44, 141, 215) !important;
+}
+
 @keyframes bouncing {
     0% {
         transform: none;
