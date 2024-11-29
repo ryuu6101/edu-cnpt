@@ -37,7 +37,7 @@ class RecordSheetExport implements FromArray, WithTitle, WithEvents
 
         $record_arr = [];
         $stt = 1;
-        $list_records = $semester->records->where('class_id', $class->id)->where('subject_id', $vnedu_subject->subject->id ?? 0);
+        $list_records = $semester->records->where('class_id', $class->id)->where('vnedu_subject_id', $vnedu_subject->id ?? 0);
         if ($list_records->count() > 0) {
             foreach ($list_records as $key => $record) {
                 if (!$record->student) continue;

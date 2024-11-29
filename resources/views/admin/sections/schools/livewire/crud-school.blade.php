@@ -44,7 +44,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
+                    {{-- <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Tên trường (Vnedu):</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" wire:model.blur="export_name">
@@ -56,7 +56,7 @@
                             </span>
                             @enderror
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Cấp bậc:</label>

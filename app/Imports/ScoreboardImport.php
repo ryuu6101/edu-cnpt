@@ -5,74 +5,86 @@ namespace App\Imports;
 use App\Models\Student;
 use App\Models\Subject;
 
+use App\Models\VneduFile;
 use App\Models\Scoreboard;
+use App\Models\VneduSubject;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Events\BeforeSheet;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class ScoreboardImport implements ToCollection, WithChunkReading
+class ScoreboardImport implements ToCollection, WithChunkReading, WithEvents
 {
-    public $department;
-    public $school;
     public $class;
     public $semester;
+    public $coordinates;
 
-    public function __construct($params) {
-        $this->department = $params['department'];
-        $this->school = $params['school'];
-        $this->class = $params['class'];
-        $this->semester = $params['semester'];
+    public $CurrentSheetIndex = 0;
+    public $CurrentSheetName = '';
+    public $ErrorMessage = '';
+    public $ErrorReports = [];
+
+    public function __construct($vnedu_file_id, $coordinates) {
+        $vnedu_file = VneduFile::find($vnedu_file_id);
+        $this->class = $vnedu_file->class;
+        $this->semester = $vnedu_file->semester;
+        $this->coordinates = $coordinates;
     }
 
     public function collection(Collection $collection)
     {
-        $subject_and_teacher = explode(' - ', $collection[3][5], 2);
+        if ($this->ErrorMessage != '') return;
+
+        $arr_index = $this->getArrayIndex($this->coordinates['subject_cell']);
+        $subject_cell = $collection[$arr_index['row']][$arr_index['column']];
+        if ($subject_cell == '') {
+            $this->ErrorMessage = 'Không tìm thấy Môn học ở ô '.$this->coordinates['subject_cell'];
+            return;
+        }
+        $subject_and_teacher = explode(' - ', $subject_cell, 2);
 
         $subject_name = mb_ucfirst(trim(str_replace('Môn học:', '', $subject_and_teacher[0])), 'UTF-8', true);
         $subject_name_striped = strip_vn($subject_name);
         $subject_name_slug = str_replace(' ', '_', mb_strtolower($subject_name_striped, 'UTF-8'));
 
-        $subject = Subject::firstOrCreate([
-            'name' => $subject_name,
-            'grade' => $this->class->grade,
-        ]);
+        $vnedu_subject = VneduSubject::where('grade', $this->class->grade)
+                                ->where('optional_name', $subject_name)
+                                ->orWhere('name', $subject_name)->first();
 
-        // $this->class->subjects()->syncWithoutDetaching([$subject->id]);
+        if (!$vnedu_subject) {
+            $this->ErrorReports[$this->CurrentSheetName][] = "Không tìm thấy môn học {$subject_name}";
+            return;
+        }
 
-        $records = $collection->take(6 - $collection->count());
+        for ($stt = $this->coordinates['starting_row'] - 1; true; $stt++) {
+            if (!($row = $collection[$stt] ?? false)) break;
+            if (!is_numeric($row[0])) break;
 
-        foreach ($records as $key => $record) {
-            $index = $record[0];
-            $id_code = $record[1];
-            $student_name = $record[2];
-            $tx1 = $record[5];
-            $tx2 = $record[6];
-            $tx3 = $record[7];
-            $tx4 = $record[8];
-            $tx5 = $record[9];
-            $DDGgk = $record[10];
-            $DDGck = $record[11];
+            $index = $row[0];
+            $id_code = $row[1];
+            $student_name = $row[2];
+            $tx1 = $row[5];
+            $tx2 = $row[6];
+            $tx3 = $row[7];
+            $tx4 = $row[8];
+            $tx5 = $row[9];
+            $DDGgk = $row[10];
+            $DDGck = $row[11];
 
             if (empty($student_name)) continue;
 
-            // $student = Student::updateOrCreate([
-            //     'fullname' => $student_name,
-            //     'id_code' => $id_code,
-            //     'class_id' => $this->class->id,
-            // ],[
-            //     'index' => $index,
-            // ]);
-
-            $student = $this->class->students->where('id_code', $id_code)->first();
-            if (!$student) continue;
+            $student = $this->class->students->where('fullname', $student_name)->first();
+            if (!$student) {
+                $this->ErrorReports[$this->CurrentSheetName][] = "Không tìm thấy học sinh {$student_name}";
+                continue;
+            }
 
             $scoreboard = Scoreboard::updateOrCreate([
                 'semester_id' => $this->semester->id,
-                'department_id' => $this->department->id,
-                'school_id' => $this->school->id,
                 'class_id' => $this->class->id,
                 'student_id' => $student->id,
-                'subject_id' => $subject->id,
+                'vnedu_subject_id' => $vnedu_subject->id,
             ],[
                 'tx1' => $tx1,
                 'tx2' => $tx2,
@@ -83,6 +95,26 @@ class ScoreboardImport implements ToCollection, WithChunkReading
                 'ddgck' => $DDGck,
             ]);
         }
+    }
+
+    public function getArrayIndex($coordinate) {
+        $column = ord(substr($coordinate, 0, 1)) - 65;
+        $row = substr($coordinate, 1) - 1;
+        
+        return [
+            'row' => $row,
+            'column' => $column,
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            BeforeSheet::class => function(BeforeSheet $event) {
+                $this->CurrentSheetName = $event->getSheet()->getTitle();
+                $this->CurrentSheetIndex++;
+            }
+        ];
     }
 
     public function chunkSize(): int

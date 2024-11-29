@@ -33,6 +33,24 @@ class SectionController extends Controller
         return view('admin.sections.dashboard.index')->with(['menu' => $menu]);
     }
 
+    public function excel_import() {
+        $menu = [
+            'sidebar' => 'dashboard',
+            'breadcrumb' => 'Trang chủ',
+        ];
+
+        return view('admin.sections.excel-import.index')->with(['menu' => $menu]);
+    }
+
+    public function vnedu_import() {
+        $menu = [
+            'sidebar' => 'dashboard',
+            'breadcrumb' => 'Trang chủ',
+        ];
+
+        return view('admin.sections.vnedu-import.index')->with(['menu' => $menu]);
+    }
+
     public function schools() {
         $menu = [
             'sidebar' => 'schools',
@@ -82,7 +100,7 @@ class SectionController extends Controller
             'breadcrumb' => 'Môn học',
         ];
 
-        return view('admin.sections.subjects.index')->with(['menu' => $menu]);
+        return view('admin.sections.vnedu-subjects.index')->with(['menu' => $menu]);
     }
 
     public function vnedu_files() {
@@ -108,5 +126,30 @@ class SectionController extends Controller
             'vnedu_file_id' => $vnedu_file_id,
             'menu' => $menu
         ]);
+    }
+
+    public function scoreboard_import(Request $request) {
+        $menu = [
+            'sidebar' => 'vnedu-files',
+            'breadcrumb' => 'Bảng điểm',
+        ];
+
+        $vnedu_file_id = $request->input('file_id');
+        $vnedu_file = $this->vneduFileRepos->find($vnedu_file_id);
+        if (!$vnedu_file) return abort(404);
+
+        return view('admin.sections.scoreboard-import.index')->with([
+            'vnedu_file_id' => $vnedu_file_id,
+            'menu' => $menu
+        ]);
+    }
+
+    public function coordinate_presets() {
+        $menu = [
+            'sidebar' => 'dashboard',
+            'breadcrumb' => 'Trang chủ',
+        ];
+
+        return view('admin.sections.coordinate-presets.index')->with(['menu' => $menu]);
     }
 }

@@ -12,7 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $models = ['Department', 'School', 'ClassRoom', 'Student', 'VneduFile', 'Subject', 'VneduSubject', 'Semester', 'Scoreboard'];
+        $models = ['Department', 'School', 'ClassRoom', 'Student', 'VneduFile', 'Subject', 'VneduSubject', 'Semester', 
+                    'Scoreboard', 'CoordinatePreset'];
 
         foreach ($models as $key => $value) {
             $plural = Str::plural($value);

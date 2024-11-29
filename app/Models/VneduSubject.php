@@ -18,6 +18,8 @@ class VneduSubject extends Model
         'name',
         'grade',
         'subject_id',
+        'optional_name',
+        'use_rating_point'
     ];
 
     public function subject() {

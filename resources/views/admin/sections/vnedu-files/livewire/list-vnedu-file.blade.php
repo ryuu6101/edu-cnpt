@@ -57,6 +57,10 @@
                                             {{ $vnedu_file->semester->school_year ?? '' }} 
                                         </td>
                                         <td class="text-center">
+                                            <a href="{{ route('scoreboard-import.index', ['file_id' => $vnedu_file->id]) }}" 
+                                            class="badge badge-success">
+                                                <i class="icon-file-excel"></i>
+                                            </a>
                                             <a href="{{ route('scoreboard.index', ['file_id' => $vnedu_file->id]) }}" 
                                             class="badge badge-primary">
                                                 <i class="icon-eye"></i>

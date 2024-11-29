@@ -10,9 +10,12 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 class StudentImport implements ToCollection, WithMultipleSheets
 {
     public $class;
+    public $coordinates;
+    public $ErrorMessage = '';
 
-    public function __construct($class) {
+    public function __construct($class, $coordinates) {
         $this->class = $class;
+        $this->coordinates = $coordinates;
     }
 
     /**
@@ -20,7 +23,7 @@ class StudentImport implements ToCollection, WithMultipleSheets
     */
     public function collection(Collection $collection)
     {
-        $records = $collection->take(6 - $collection->count());
+        $records = $collection->take($this->coordinates['starting_row'] - 1 - $collection->count());
         $student_ids = [];
 
         foreach ($records as $key => $record) {

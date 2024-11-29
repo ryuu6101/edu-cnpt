@@ -19,6 +19,22 @@
                 <form action="{{ route('vnedu.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('POST')
+                    <div class="row border-bottom mb-4">
+                        <div class="col-12 text-center mb-2">
+                            <a href="{{ route('excel-import.index') }}"><span class="text-muted">Nhập file CSDL</span></a>
+                            {{-- <i class="icon-arrow-right14 mx-2"></i> --}}
+                            <span class="mx-2">/</span>
+                            <strong>Nhập file EDU</strong>
+                        </div>
+                        {{-- <div class="col-12 text-center mb-2">
+                            <div class="custom-control custom-control-right custom-switch custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" name="redirect" id="redirect_check" checked="">
+                                <label class="custom-control-label" for="redirect_check">
+                                    Tự động chuyển sang bước tiếp theo
+                                </label>
+                            </div>
+                        </div> --}}
+                    </div>
                     <div class="row justify-content-center mt-2">
                         <div class="col-5">
                             <div class="custom-file text-left w-100">

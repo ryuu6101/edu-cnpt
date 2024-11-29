@@ -23,8 +23,14 @@
             </div>
 
             <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col text-right">
+                <div class="row mb-2 justify-content-end">
+                    <div class="col-auto">
+                        <a type="button" class="btn btn-primary" href="{{ route('scoreboard-import.index', ['file_id' => $vnedu_file->id]) }}">
+                            <i class="icon-file-excel mr-2"></i>
+                            Nhập bảng điểm
+                        </a>
+                    </div>
+                    <div class="col-auto">
                         @if ($allow_export)
                         <a type="button" class="btn btn-success" href="{{ route('excel.export', ['file_id' => $vnedu_file->id]) }}">
                             <i class="icon-file-excel mr-2"></i>
@@ -43,19 +49,10 @@
                     <div class="col">
                         <ul class="nav nav-tabs nav-tabs-highlight pb-2">
                             @foreach ($vnedu_sheets as $vnedu_sheet)
-                            @php($subject_id = $vnedu_sheet->vnedu_subject->subject_id ?? 0)
-                            @php($records = $scoreboards->where('subject_id', $subject_id))
                             <li class="nav-item">
                                 <a href="#sheet_tab_{{ $vnedu_sheet->id }}" data-toggle="tab" wire:ignore.self
                                 class="nav-link {{ $loop->first ? 'active' : '' }} text-nowrap">
-                                    @if ($subject_id <= 0 || $records->count() <= 0)
-                                    <span class="text-danger">
-                                        {{ $vnedu_sheet->sheet_name }}
-                                        <i class="icon-warning22 ml-2"></i>
-                                    </span>
-                                    @else
                                     <span>{{ $vnedu_sheet->sheet_name }}</span>
-                                    @endif
                                 </a>
                             </li>
                             @endforeach
@@ -66,26 +63,6 @@
                             <div class="tab-pane fade {{ $loop->first ? 'active show' : '' }}" 
                             id="sheet_tab_{{ $vnedu_sheet->id }}" wire:ignore.self>
                                 <div class="table-responsive">
-                                    @php($subject = $vnedu_sheet->vnedu_subject->subject)
-                                    @php($subject_id = $vnedu_sheet->vnedu_subject->subject_id ?? 0)
-                                    @php($records = $scoreboards->where('subject_id', $subject_id))
-                                    @if ($subject_id <= 0)
-                                    <div class="w-100 text-center">
-                                        <h2 class="text-danger">
-                                            <i class="icon-warning mr-2"></i> <br> 
-                                            Vui lòng liên kết môn học <br>
-                                            Môn: {{ $vnedu_sheet->vnedu_subject->name }}
-                                        </h2>
-                                    </div>
-                                    @elseif ($records->count() <= 0)
-                                    <div class="w-100 text-center">
-                                        <h2 class="text-danger">
-                                            <i class="icon-warning mr-2"></i> <br> 
-                                            Không có dữ liệu <br>
-                                            Môn: {{ $vnedu_sheet->vnedu_subject->name }}
-                                        </h2>
-                                    </div>
-                                    @else
                                     <table class="table table-dark table-sm table-bordered table-hoverable text-nowrap align-middle">
                                         <thead class="align-middle">
                                             <tr>
@@ -106,6 +83,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php($records = $scoreboards->where('vnedu_subject_id', $vnedu_sheet->vnedu_subject_id))                
                                             @foreach ($records as $record)
                                             @php($fullname = $record->student->fullname ?? '')
                                             @continue($fullname == '')
@@ -122,7 +100,7 @@
                                                     <input type="text" class="form-control" 
                                                     wire:model.blur="edit_student_fields.fullname">
                                                 </td>
-                                                @if ($subject->use_digit_point)
+                                                @if (!$vnedu_sheet->vnedu_subject->use_rating_point)
                                                 <td class="text-center">
                                                     <input type="number" class="form-control text-center hidden-arrow" 
                                                     wire:model.blur="edit_record_fields.tx1" oninput="checkRange(this)">
@@ -241,7 +219,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    @endif
                                 </div>
                             </div>
                             @endforeach

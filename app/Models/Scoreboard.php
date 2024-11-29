@@ -24,6 +24,7 @@ class Scoreboard extends Model
         'tx5',
         'ddggk',
         'ddgck',
+        'vnedu_subject_id',
     ];
 
     public function semester() {

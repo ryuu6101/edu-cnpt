@@ -13,7 +13,7 @@ class ListVneduFile extends Component
     protected $vneduFileRepos;
 
     public $params = [];
-    public $paginate = 5;
+    public $paginate = 10;
 
     protected $listeners = [
         'search',
