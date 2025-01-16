@@ -16,17 +16,28 @@ class ScoreboardImport implements ToCollection, WithChunkReading
     public $school;
     public $class;
     public $semester;
+    public $coordinates;
+    public $ErrorMessage = '';
 
-    public function __construct($params) {
+    public function __construct($params, $coordinates) {
         $this->department = $params['department'];
         $this->school = $params['school'];
         $this->class = $params['class'];
         $this->semester = $params['semester'];
+        $this->coordinates = $coordinates;
     }
 
     public function collection(Collection $collection)
     {
-        $subject_and_teacher = explode(' - ', $collection[3][5], 2);
+        if ($this->ErrorMessage != '') return;
+
+        $arr_index = $this->getArrayIndex($this->coordinates['subject_cell']);
+        $subject_cell = $collection[$arr_index['row']][$arr_index['column']];
+        if ($subject_cell == '') {
+            $this->ErrorMessage = 'Không tìm thấy Môn học ở ô '.$this->coordinates['subject_cell'];
+            return;
+        }
+        $subject_and_teacher = explode(' - ', $subject_cell, 2);
 
         $subject_name = mb_ucfirst(trim(str_replace('Môn học:', '', $subject_and_teacher[0])), 'UTF-8', true);
         $subject_name_striped = strip_vn($subject_name);
@@ -39,7 +50,7 @@ class ScoreboardImport implements ToCollection, WithChunkReading
 
         // $this->class->subjects()->syncWithoutDetaching([$subject->id]);
 
-        $records = $collection->take(6 - $collection->count());
+        $records = $collection->take($this->coordinates['starting_row'] - 1 - $collection->count());
 
         foreach ($records as $key => $record) {
             $index = $record[0];
@@ -83,6 +94,16 @@ class ScoreboardImport implements ToCollection, WithChunkReading
                 'ddgck' => $DDGck,
             ]);
         }
+    }
+
+    public function getArrayIndex($coordinate) {
+        $column = ord(substr($coordinate, 0, 1)) - 65;
+        $row = substr($coordinate, 1) - 1;
+        
+        return [
+            'row' => $row,
+            'column' => $column,
+        ];
     }
 
     public function chunkSize(): int

@@ -23,21 +23,40 @@
             </div>
 
             <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col text-right">
-                        @if ($allow_export)
-                        <a type="button" class="btn btn-success" href="{{ route('excel.export', ['file_id' => $vnedu_file->id]) }}">
-                            <i class="icon-file-excel mr-2"></i>
-                            Xuất file Excel
-                        </a>
-                        @else
-                        <button type="button" class="btn btn-success" disabled>
-                            <i class="icon-file-excel mr-2"></i>
-                            Xuất file Excel
-                        </button>
-                        @endif
+                <form action="{{ route('excel.export') }}" method="POST" target="_blank">
+                    @method('POST')
+                    @csrf
+                    <input type="hidden" name="file_id" value="{{ $vnedu_file->id }}">
+                    <div class="row justify-content-between mb-2">
+                        <div class="col-auto">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Export số cột điểm TX:</span>
+                                </div>
+                                <select name="number_of_column" class="form-control w-auto">
+                                    {{-- <option value="1">1</option>
+                                    <option value="2">2</option> --}}
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5" selected>5</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            @if ($allow_export)
+                            <button type="submit" class="btn btn-success">
+                                <i class="icon-file-excel mr-2"></i>
+                                Xuất file Excel
+                            </button>
+                            @else
+                            <button type="button" class="btn btn-success" disabled>
+                                <i class="icon-file-excel mr-2"></i>
+                                Xuất file Excel
+                            </button>
+                            @endif
+                        </div>
                     </div>
-                </div>
+                </form>
 
                 <div class="row">
                     <div class="col">

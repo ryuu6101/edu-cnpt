@@ -49,7 +49,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('dashboard.index') }}" class="nav-link dashboard">
+                    <a href="{{ route('excel-import.index') }}" class="nav-link dashboard">
                         <i class="icon-home4"></i>
                         <span>Trang chủ</span>
                     </a>

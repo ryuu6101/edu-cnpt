@@ -39,7 +39,8 @@ class CrudSchool extends Component
         return [
             'name' => [
                 'required',
-                Rule::unique('schools')->where('department_id', $this->department_id)->ignore($this->school->id ?? 0),
+                Rule::unique('schools')->where('department_id', $this->department_id)->where('deleted_at', '<>', null)
+                ->ignore($this->school->id ?? 0),
             ],
             'export_name' => ['nullable'],
             'department_id' => ['nullable'],
